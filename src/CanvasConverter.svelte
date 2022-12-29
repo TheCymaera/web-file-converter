@@ -1,7 +1,7 @@
 <script lang="ts">
-	import * as downloader from "./downloader.js";
 	import MediaDisplay from "./components/SideBySideDisplay.svelte";
 	import Slider from "./components/Slider.svelte";
+	import { saveURL } from "./utilities.js";
 
 	const imageFormats = {
 		"image/png": "png",
@@ -50,7 +50,7 @@
 	function saveFile() {
 		const extension = imageFormats[generatedOutputMimeType].split(",")[0];
 		const fileName = file.name.slice(0, file.name.lastIndexOf("."));
-		downloader.saveURL(outputURL, fileName + "." + extension);
+		saveURL(outputURL, fileName + "." + extension);
 	}
 </script>
 

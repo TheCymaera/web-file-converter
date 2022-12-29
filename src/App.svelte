@@ -3,7 +3,6 @@ import DropZone from "./components/DropZone.svelte";
 import CanvasConverter from "./CanvasConverter.svelte";
 import FFmpegConverter from "./FFmpegConverter.svelte";
 import AppInfo from "./AppInfo.svelte";
-    import { ServiceWorkerLoader } from "./ServiceWorkerLoader.js";
 
 const converters = [
 	{
@@ -35,13 +34,6 @@ function loadFiles(files: File[]) {
 
 
 let updateAvailable = false;
-const swLoader = new ServiceWorkerLoader();
-swLoader.onUpgrade = ()=>{
-	updateAvailable = true;
-}
-// i hate service workers.
-//swLoader.register();
-
 let dialogOpen = false;
 </script>
 

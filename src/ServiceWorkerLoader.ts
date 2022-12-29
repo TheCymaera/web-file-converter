@@ -1,14 +1,11 @@
 let controller = navigator.serviceWorker?.controller ?? undefined;
 
 export class ServiceWorkerLoader {
-	onFirstInstall = ()=>{};
-	onUpgrade = ()=>{};
+	onFirstController = ()=>{};
+	onUpgradeController = ()=>{};
 
 	constructor() {
-		if (!navigator.serviceWorker) {
-			console.warn("ServiceWorkerLoader: Service worker is not supported in this environment.");
-			return;
-		}
+		if (!navigator.serviceWorker) return;
 	
 		navigator.serviceWorker.oncontrollerchange = ()=>{
 			
@@ -17,28 +14,18 @@ export class ServiceWorkerLoader {
 			
 			if (controller) {
 				if (oldController === undefined) {
-				console.log("ServiceWorkerLoader: Service worker installed for the first time.");
-					this.onFirstInstall();
+					this.onFirstController();
 				} else {
-					console.log("ServiceWorkerLoader: Service worker changed.");
-					this.onUpgrade();
+					this.onUpgradeController();
 				}
-			} else {
-				console.log("ServiceWorkerLoader: Service worker removed.");
 			}
 		}
 	}
 
-	async register() {
-		if (!navigator.serviceWorker) return;
+	async register(scriptURL: string | URL, options?: RegistrationOptions): Promise<ServiceWorkerRegistration|undefined> {
+		if (!navigator.serviceWorker) throw new Error("Service worker is not supported in this environment");
 		
-		await navigator.serviceWorker.register('./service-worker.ww.js',{scope:"."})
-		.then(function() {
-			console.log(`Successfully registered service worker at scope: "."`)
-		})
-		.catch(function(error) {
-			console.log(`Failed to register service worker.\n${error}`);
-		});
+		return navigator.serviceWorker.register(scriptURL, options);
 	}
 	
 	
@@ -49,7 +36,6 @@ export class ServiceWorkerLoader {
 		const unregisterPromises = registrations.map(registration => registration.unregister());
 	
 		await Promise.all(unregisterPromises);
-		console.log("Uninstalled service worker.")
 	}
 	
 	async deleteAllCaches() {
@@ -57,7 +43,6 @@ export class ServiceWorkerLoader {
 		const cacheDeletionPromises = allCaches.map(cache => caches.delete(cache));
 		
 		await Promise.all(cacheDeletionPromises);
-		console.log("Cleared cache.")
 	}
 }
 

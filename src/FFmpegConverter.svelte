@@ -1,9 +1,8 @@
 <script lang="ts">
-	import * as downloader from './downloader.js';
 	import MediaDisplay from './components/SideBySideDisplay.svelte';
 	import AudioOrVideo from './components/AudioOrVideo.svelte';
 	import Slider from './components/Slider.svelte';
-	import { ffmpeg, ffmpegLoaded } from "./ffmpeg.js";
+	import { ffmpeg, ffmpegLoaded, saveURL } from "./utilities.js";
 
 	const videoFormats = {
 		"video/mp4": "mp4",
@@ -46,11 +45,11 @@
 	});
 
 	async function convert() {
+		const outputFile = 'output.' + allFormats[outputMimeType].split(", ")[0]!;
+
 		progressText = "Loading FFmpeg..."
 		progress = 0;
 		await ffmpegLoaded;
-
-		const outputFile = 'output.' + allFormats[outputMimeType].split(", ")[0]!;
 		
 		progressText = "Converting..."
 		let output: Uint8Array|undefined;
@@ -88,7 +87,7 @@
 	function saveFile() {
 		const extension = generatedOutputMimeType.split("/")[1];
 		const fileName = file.name.slice(0, file.name.lastIndexOf("."));
-		downloader.saveURL(outputURL, fileName + "." + extension);
+		saveURL(outputURL, fileName + "." + extension);
 	}
 </script>
 
