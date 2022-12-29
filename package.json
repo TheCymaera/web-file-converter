@@ -1,0 +1,29 @@
+{
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "rollup -c",
+		"dev": "rollup -c -w"
+	},
+	"devDependencies": {
+		"@rollup/plugin-commonjs": "^21.0.1",
+		"@rollup/plugin-json": "^6.0.0",
+		"@rollup/plugin-node-resolve": "^13.1.3",
+		"@rollup/plugin-typescript": "^8.0.0",
+		"@rollup/plugin-wasm": "^6.1.1",
+		"@tsconfig/svelte": "^2.0.1",
+		"rollup": "^2.3.4",
+		"rollup-plugin-scss": "^4.0.0",
+		"rollup-plugin-sourcemaps": "^0.6.3",
+		"rollup-plugin-svelte": "^7.1.0",
+		"sass": "^1.57.1",
+		"svelte": "^3.52.0",
+		"svelte-check": "^2.0.0",
+		"svelte-preprocess": "^4.0.0",
+		"tslib": "^2.4.1",
+		"typescript": "^4.8.4"
+	},
+	"dependencies": {
+		"@ffmpeg/ffmpeg": "^0.11.6"
+	}
+}

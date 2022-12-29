@@ -1,0 +1,34 @@
+{
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"rootDir": "src",
+		"module": "ESNext",
+		"target": "ESNext",
+
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+
+    "importsNotUsedAsValues": "error",
+    "isolatedModules": false,
+
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+		
+		"strictNullChecks": true,
+		"noImplicitThis": true,
+		"noImplicitReturns": true,
+		"noUncheckedIndexedAccess": true,
+		"alwaysStrict": true,
+
+		"preserveConstEnums": true,
+		"removeComments": true,
+		"sourceMap": true,
+		"inlineSources": true,
+
+		"skipDefaultLibCheck": true,
+
+		"lib": ["ESNext", "DOM", "DOM.Iterable"]
+	}
+}

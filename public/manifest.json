@@ -1,0 +1,14 @@
+{
+	"name": "File Converter",
+	"short_name": "File Converter",
+	"description": "Convert between video and image formats.",
+	"start_url": "./",
+	"display": "standalone",
+	"theme_color": "#fff",
+	"background_color": "#eee",
+	"icons": [{
+		"src": "./icon-bg-512.png",
+		"sizes": "512x512",
+		"type": "image/png"
+	}]
+}
