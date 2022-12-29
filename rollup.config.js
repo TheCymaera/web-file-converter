@@ -7,6 +7,7 @@ import node from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import wasm from '@rollup/plugin-wasm';
 import json from '@rollup/plugin-json';
+import terser from '@rollup/plugin-terser';
 import scss from 'rollup-plugin-scss';
 
 export default [
@@ -31,7 +32,8 @@ export default [
 			scss({
 				fileName: "main.css",
 				outputStyle: "compressed",
-			})
+			}),
+			terser(),
 		]
 	},
 	//{
