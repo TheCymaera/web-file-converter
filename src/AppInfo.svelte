@@ -32,6 +32,8 @@ Supported formats include but are not limited to:
 	<li><code>audio/wav</code></li>
 </ul>
 
+<br />
+
 <h2>See also:</h2>
 <ul>
 	<li><a href="https://github.com/TheCymaera/web-file-converter" target="_blank">Source code on GitHub</a></li>
