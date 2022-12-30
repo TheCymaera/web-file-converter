@@ -1,5 +1,5 @@
 <script lang="ts">
-import DropZone from "./components/DropZone.svelte";
+import DragAndDrop from "./components/DragAndDrop.svelte";
 import CanvasConverter from "./CanvasConverter.svelte";
 import FFmpegConverter from "./FFmpegConverter.svelte";
 import AppInfo from "./AppInfo.svelte";
@@ -63,14 +63,14 @@ let dialogOpen = false;
 			</app-bar-right>
 		</app-bar>
 		<stack- slot="body">
-			<DropZone onDrop={loadFiles}>
-				<center- style="text-align: center;">
+			<DragAndDrop onDrop={loadFiles}>
+				<center- style="text-align: center; padding: 1em;">
 					<p>
 						Drag and drop a video, image, or audio file. <br />
 						<small>All conversions are done locally in your browser. We never receive your files.</small>
 					</p>
 				</center->
-			</DropZone>
+			</DragAndDrop>
 		</stack->
 	</standard-view>
 {:else}
@@ -87,14 +87,14 @@ let dialogOpen = false;
 		<stack- slot="body">
 			<svelte:component this={converter} bind:loadFile />
 
-			<DropZone onDrop={loadFiles} overlay={true}>
-				<center- style="text-align: center;">
+			<DragAndDrop onDrop={loadFiles} overlay={true}>
+				<center- style="text-align: center; padding: 1em;">
 					<p>
 						Drag and drop a video, image, or audio file. <br />
 						<small>All conversions are done locally in your browser. We never receive your files.</small>
 					</p>
 				</center->
-			</DropZone>
+			</DragAndDrop>
 		</stack->
 	</standard-view>
 {/if}

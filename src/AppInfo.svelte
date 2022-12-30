@@ -16,6 +16,22 @@ Videos and audio files are converted using the <a href="https://github.com/ffmpe
 <br />
 <br />
 
+<h2>Supported Formats</h2>
+Supported formats include but are not limited to:
+<ul>
+	<li><code>image/png</code></li>
+	<li><code>image/jpeg</code></li>
+	<li><code>image/webp</code></li>
+	<li><code>video/mp4</code></li>
+	<li><code>video/quicktime</code></li>
+	<li><code>video/ogg</code></li>
+	<li><code>video/webm</code></li>
+	<li><code>video/x-matroska</code></li>
+	<li><code>audio/mpeg</code></li>
+	<li><code>audio/ogg</code></li>
+	<li><code>audio/wav</code></li>
+</ul>
+
 <h2>See also:</h2>
 <ul>
 	<li><a href="https://github.com/TheCymaera/web-file-converter" target="_blank">Source code on GitHub</a></li>
