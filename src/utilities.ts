@@ -6,7 +6,15 @@ export const ffmpeg = (createFFmpeg as typeof import("@ffmpeg/ffmpeg").createFFm
 
 // for debugging
 window["ffmpeg"] = ffmpeg;
-export const ffmpegLoaded = ffmpeg.load();
+
+
+let ffmpegLoaded: Promise<void>|undefined;
+export function loadFFmpeg(): Promise<void> {
+	if (!ffmpegLoaded) {
+		ffmpegLoaded = ffmpeg.load();
+	}
+	return ffmpegLoaded;
+}
 
 export function saveURL(url: string, fileName: string) {
 	const a = document.createElement('a');

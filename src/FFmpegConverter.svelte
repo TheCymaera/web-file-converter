@@ -2,7 +2,8 @@
 	import MediaDisplay from './components/SideBySideDisplay.svelte';
 	import AudioOrVideo from './components/AudioOrVideo.svelte';
 	import Slider from './components/Slider.svelte';
-	import { ffmpeg, ffmpegLoaded, saveURL } from "./utilities.js";
+	import { ffmpeg, loadFFmpeg, saveURL } from "./utilities.js";
+    import { onMount } from 'svelte';
 	
 	export function loadFile(file: File) {
 		inputFile = file;
@@ -52,13 +53,15 @@
 		progress = ratio;
 	});
 
+	onMount(()=>loadFFmpeg()); //pre-load FFmpeg
+
 	async function convert() {
 		if (!inputFile) return;
 		const outputFile = 'output.' + allFormats[outputMimeType].split(", ")[0]!;
 
 		progressText = "Loading FFmpeg..."
 		progress = 0;
-		await ffmpegLoaded;
+		await loadFFmpeg();
 		
 		progressText = "Converting..."
 		let output: Uint8Array|undefined;
