@@ -110,7 +110,7 @@
 		<AudioOrVideo slot="output" mimeType={generatedMimeType} src={generatedURL}></AudioOrVideo>
 	</MediaDisplay>
 
-	<panel->
+	<helion-panel>
 		<div>
 			Input Format: <code>{inputFile?.type}</code>
 		</div>
@@ -118,7 +118,7 @@
 
 		<label>
 			<div>Output Format</div>
-			<select class="outlined-text-field" bind:value={outputMimeType}>
+			<select class="helion-outlined-text-field" bind:value={outputMimeType}>
 				{#if inputFile?.type.startsWith("video/")}
 					<optgroup label="Video">
 						{#each Object.entries(videoFormats) as [mimeType, extensions]}
@@ -147,7 +147,7 @@
 			<br />
 		</label>
 
-		<button class="filled-button" on:click={convert} disabled={!!progressText}>Convert</button>
+		<button class="helion-filled-button" on:click={convert} disabled={!!progressText}>Convert</button>
 		
 		<br />
 		<br />
@@ -157,7 +157,7 @@
 			<progress value={progress} max="1" style="display: block; width: 100%;"></progress> 
 			<small style="display: block; text-align: center;">{(progress * 100).toFixed(2)}%</small>
 		{/if}
-	</panel->
+	</helion-panel>
 </div>
 
 <style>
@@ -174,7 +174,7 @@
 		}
 	}
 
-	panel- {
+	helion-panel {
 		padding: 0.5em;
 		overflow: auto;
 	}

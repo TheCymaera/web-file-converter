@@ -7,7 +7,7 @@
 </script>
 <div class="SliderContainer">
 	<span>{min}</span>
-	<input type="range" {step} {min} {max} bind:value={value}>
+	<input class="helion-slider" type="range" {step} {min} {max} bind:value={value}>
 	<span>{max}</span>
 </div>
 <small style="display: block; text-align: center">{value}</small>

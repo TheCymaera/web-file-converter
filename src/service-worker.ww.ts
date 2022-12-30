@@ -14,9 +14,6 @@ const staticAssets = [
 	"./icon-bg-512.png",
 	"./manifest.json",
 	"/favicon.png",
-	"/shared/fontawesome-free-5.13.1-web/css/all.min.css",
-	"/shared/fontawesome-free-5.13.1-web/webfonts/fa-solid-900.woff2",
-	"/shared/helion/v1/index.css",
 	"https://unpkg.com/@ffmpeg/core@%5E0.11.0/dist/ffmpeg-core.js",
 	"https://unpkg.com/@ffmpeg/core@%5E0.11.0/dist/ffmpeg-core.wasm",
 	"https://unpkg.com/@ffmpeg/core@%5E0.11.0/dist/ffmpeg-core.worker.js"

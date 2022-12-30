@@ -6,9 +6,9 @@
 	<!-- svelte-ignore a11y-media-has-caption -->
 	<video src={src} controls />
 {:else if mimeType.startsWith("audio/")}
-	<center->
+	<helion-center>
 		<audio src={src} controls />
-	</center->
+	</helion-center>
 {:else}
 	<p>File type cannot be displayed</p>
 {/if}

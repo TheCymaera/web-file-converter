@@ -1,37 +1,39 @@
 <script lang="ts">
+	import Icon from "./Icon.svelte";
+	import saveIcon from "../icons/save.svg";
+
+
 	export let saveFile: ()=>void;
 	export let showOutput: boolean;
 </script>
-<div
+<helion-wrapping-grid
 	class="SideBySide" 
 	class:showOutput={showOutput}
 	style="--min-column-width: 500px;"
+	sizing="max"
 >
-	<stack->
+	<helion-stack>
 		<slot name=input></slot>
-	</stack->
+	</helion-stack>
 
-	<stack->
+	<helion-stack>
 		<slot name=output></slot>
-	</stack->
+	</helion-stack>
 	<button 
-		class="circle-button" 
+		class="helion-circle-button" 
 		on:click={saveFile}
 		title="Save File">
-		<i class="fa fa-save"></i>
+		<Icon url="{saveIcon}" />
 	</button>
-</div>
+</helion-wrapping-grid>
 <style>
 	.SideBySide {
 		overflow: hidden;
 		padding: .5em;
 		grid-gap: .5em;
-
-		display: grid;
-		grid-template-columns: repeat(var(--_repeat-mode), minmax(min(100%, var(--min-column-width)), 1fr))
 	}
 
-	.circle-button {
+	.helion-circle-button {
 		position: absolute;
 		bottom: .2em;
 		right: .2em;

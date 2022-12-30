@@ -18,7 +18,7 @@
 	header('Cross-Origin-Opener-Policy: same-origin');
 ?>
 <!DOCTYPE html>
-<html class="full-window-document">
+<html class="helion-full-window-document">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -48,14 +48,11 @@
 	<meta property="og:type"  content="<?php echo $page_og_type;?>"/>
 
 	<!-- styles -->
-	<link rel="stylesheet" href="/shared/helion/v1/index.css" type="text/css" />
-	<link rel="stylesheet" href="/shared/fontawesome-free-5.13.1-web/css/all.min.css" type="text/css" />
 	<link rel="stylesheet" href="./dst/main.css" />
-
 
 	<!-- scripts -->
 	<script src="./dst/main.js" type="module"></script>
 </head>
-<body class="stack">
+<body class="helion-stack">
 </body>
 </html>

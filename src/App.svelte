@@ -4,6 +4,13 @@ import CanvasConverter from "./CanvasConverter.svelte";
 import FFmpegConverter from "./FFmpegConverter.svelte";
 import AppInfo from "./AppInfo.svelte";
 import { tick } from "svelte";
+import closeIcon from "./icons/times.svg";
+import homeIcon from "./icons/home.svg";
+import infoIcon from "./icons/info.svg";
+import downloadIcon from "./icons/download.svg";
+import backIcon from "./icons/angle-left.svg";
+import Icon from "./components/Icon.svelte";
+
 
 let loadFile: (file: File)=>void;
 let file: File|undefined;
@@ -44,62 +51,62 @@ let dialogOpen = false;
 
 {#if !file}
 	<standard-view>
-		<app-bar slot="header">
-			<app-bar-left>
-			</app-bar-left>
-			<app-bar-title>File Converter</app-bar-title>
-			<app-bar-right>
+		<helion-app-bar slot="header">
+			<helion-app-bar-left>
+			</helion-app-bar-left>
+			<helion-app-bar-title>File Converter</helion-app-bar-title>
+			<helion-app-bar-right>
 				{#if updateAvailable}
-					<a class="app-bar-icon-button" href="./" title="An Update is Available. Reload?" style="color: var(--color-accent);">
-						<i class="fa fa-download"></i>
+					<a class="helion-app-bar-icon-button" href="./" title="An Update is Available. Reload?" style="color: var(--color-accent);">
+						<Icon url="{downloadIcon}" />
 					</a>
 				{/if}
-				<a class="app-bar-icon-button" href="/" title="Home">
-					<i class="fa fa-home"></i>
+				<a class="helion-app-bar-icon-button" href="/" title="Home">
+					<Icon url="{homeIcon}" />
 				</a>
-				<button class="app-bar-icon-button" on:click={()=>dialogOpen = true} title="Info">
-					<i class="fa fa-info"></i>
+				<button class="helion-app-bar-icon-button" on:click={()=>dialogOpen = true} title="Info">
+					<Icon url="{infoIcon}" />
 				</button>
-			</app-bar-right>
-		</app-bar>
-		<stack- slot="body">
+			</helion-app-bar-right>
+		</helion-app-bar>
+		<helion-stack slot="body">
 			<DragAndDrop onDrop={loadFiles}>
-				<center- style="text-align: center; padding: 1em;">
+				<helion-center style="text-align: center; padding: 1em;">
 					<p>
 						Drag and drop a video, image, or audio file. <br />
 						<small>All conversions are done locally in your browser. We never receive your files.</small>
 					</p>
-				</center->
+				</helion-center>
 			</DragAndDrop>
-		</stack->
+		</helion-stack>
 	</standard-view>
 {:else}
 	<standard-view>
-		<app-bar slot="header" center-title="">
-			<app-bar-left>
-				<button class="app-bar-icon-button" on:click={()=>file = undefined}>
-					<i class="fa fa-angle-left"></i>
+		<helion-app-bar slot="header" center-title="">
+			<helion-app-bar-left>
+				<button class="helion-app-bar-icon-button" on:click={()=>file = undefined}>
+					<Icon url="{backIcon}" />
 				</button>
-			</app-bar-left>
-			<app-bar-title>Convert File</app-bar-title>
+			</helion-app-bar-left>
+			<helion-app-bar-title>Convert File</helion-app-bar-title>
 			
-		</app-bar>
-		<stack- slot="body">
+		</helion-app-bar>
+		<helion-stack slot="body">
 			<svelte:component this={converter} bind:loadFile />
 
 			<DragAndDrop onDrop={loadFiles} overlay={true}>
-				<center- style="text-align: center; padding: 1em;">
+				<helion-center style="text-align: center; padding: 1em;">
 					<p>
 						Drag and drop a video, image, or audio file. <br />
 						<small>All conversions are done locally in your browser. We never receive your files.</small>
 					</p>
-				</center->
+				</helion-center>
 			</DragAndDrop>
-		</stack->
+		</helion-stack>
 	</standard-view>
 {/if}
 
-<panel- 
+<helion-panel 
 	style="
 		opacity: {dialogOpen ? 1 : 0};
 		pointer-events: {dialogOpen ? "all" : "none"};
@@ -115,11 +122,11 @@ let dialogOpen = false;
 		</div>
 	</div>
 	<button 
-		class="circle-button" 
+		class="helion-circle-button" 
 		style="position: absolute; right: 0.5em; top: 0.5em;"
 		title="Close"
 		on:click={()=>dialogOpen = false}
 	>
-		<i class="fa fa-times"></i>
+		<Icon url="{closeIcon}" />
 	</button>
-</panel->
+</helion-panel>

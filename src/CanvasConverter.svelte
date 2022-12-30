@@ -66,7 +66,7 @@
 		<img slot=output src={generatedURL} alt="Converted">
 	</SideBySide>
 
-	<panel->
+	<helion-panel>
 		<div>
 			Input Format: <code>{inputType}</code>
 		</div>
@@ -74,7 +74,7 @@
 
 		<label>
 			<div>Output Format</div>
-			<select class="outlined-text-field" bind:value={outputMimeType}>
+			<select class="helion-outlined-text-field" bind:value={outputMimeType}>
 				{#each Object.entries(imageFormats) as [mimeType, extensions]}
 					<option value={mimeType}>{imageFormats[mimeType]} ({extensions})</option>
 				{/each}
@@ -85,14 +85,14 @@
 
 		<label>
 			<div>Output Width</div>
-			<input type="number" class="outlined-text-field" bind:value={outputWidth}>
+			<input type="number" class="helion-outlined-text-field" bind:value={outputWidth}>
 		</label>
 	
 		<br />
 
 		<label>
 			<div>Output Height</div>
-			<input type="number" class="outlined-text-field" bind:value={outputHeight}>
+			<input type="number" class="helion-outlined-text-field" bind:value={outputHeight}>
 		</label>
 
 		<br />
@@ -104,8 +104,8 @@
 			<br />
 		</label>
 
-		<button class="filled-button" on:click={convert}>Convert</button>
-	</panel->
+		<button class="helion-filled-button" on:click={convert}>Convert</button>
+	</helion-panel>
 </div>
 
 <style>
@@ -122,7 +122,7 @@
 		}
 	}
 
-	panel- {
+	helion-panel {
 		padding: .5em;
 		overflow: auto;
 	}
