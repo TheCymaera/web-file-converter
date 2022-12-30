@@ -3,6 +3,10 @@ import DropZone from "./components/DropZone.svelte";
 import CanvasConverter from "./CanvasConverter.svelte";
 import FFmpegConverter from "./FFmpegConverter.svelte";
 import AppInfo from "./AppInfo.svelte";
+import { tick } from "svelte";
+
+let loadFile: (file: File)=>void;
+let file: File|undefined;
 
 const converters = [
 	{
@@ -15,21 +19,22 @@ const converters = [
 	},
 ];
 
-let file: File|undefined;
 let converter: typeof CanvasConverter|typeof FFmpegConverter;
 
-function loadFiles(files: File[]) {
-	file = files[0]!;
+async function loadFiles(files: File[]) {
+	const newFile = files[0]!;
 
 	for (const provider of converters) {
-		if (provider.supports(file)) {
+		if (provider.supports(newFile)) {
 			converter = provider.converter;
+			file = newFile;
+			await tick(); // wait for the component to be created
+			loadFile(newFile)
 			return;
 		}
 	}
-	
-	alert("This file is not supported or is malformed\nMime Type: " + (file.type || "EMPTY"));
-	file = undefined;
+
+	alert("This file is not supported or is malformed\nMime Type: " + (newFile.type || "(empty)"));
 }
 
 
@@ -80,7 +85,7 @@ let dialogOpen = false;
 			
 		</app-bar>
 		<stack- slot="body">
-			<svelte:component this={converter} file={file} />
+			<svelte:component this={converter} bind:loadFile />
 
 			<DropZone onDrop={loadFiles} overlay={true}>
 				<center- style="text-align: center;">

@@ -40,7 +40,6 @@ function onClick() {
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-	class="stack"
 	class:isDragging
 	class:isOverlay={overlay}
 
@@ -52,6 +51,8 @@ function onClick() {
 
 <style>
 div {
+	display: grid;
+	overflow: hidden;
 	padding: 1em;
 	transition: opacity .1s ease;
 }

@@ -1,7 +1,21 @@
 <script lang="ts">
-	import MediaDisplay from "./components/SideBySideDisplay.svelte";
+	import SideBySide from "./components/SideBySideDisplay.svelte";
 	import Slider from "./components/Slider.svelte";
 	import { saveURL } from "./utilities.js";
+
+	export function loadFile(file: File) {
+		if (inputURL) URL.revokeObjectURL(inputURL);
+		inputURL = URL.createObjectURL(file);
+		inputName = file.name.slice(0, file.name.lastIndexOf("."));
+		inputType = file.type;
+		
+		generatedURL = "";
+	}
+
+	function onLoad(this: HTMLImageElement) {
+		outputWidth = this.naturalWidth;
+		outputHeight = this.naturalHeight;
+	}
 
 	const imageFormats = {
 		"image/png": "png",
@@ -11,58 +25,50 @@
 		//"image/bmp": "bmp",
 	};
 
-	let src = "";
-
-	export let file: File;
-
-	let originalImage: HTMLImageElement;
+	// input
+	let inputURL = "";
+	let inputName = "";
+	let inputType = "";
+	let inputImage: HTMLImageElement;
 	
+	// config
 	let outputMimeType = "image/png";
-	let generatedOutputMimeType = outputMimeType;
 	let outputQuality = 1;
-	let width: number = 0;
-	let height: number = 0;
+	let outputWidth = 0;
+	let outputHeight = 0;
 
-	let outputURL = "";
-
-	$: {
-		if (src) URL.revokeObjectURL(src);
-		src = URL.createObjectURL(file);
-	}
-
-	function onLoad(this: HTMLImageElement) {
-		width = this.naturalWidth;
-		height = this.naturalHeight;
-	}
+	// generated
+	let generatedURL = "";
+	let generatedOutputMimeType = outputMimeType;
 
 	function convert() {
 		const canvas = document.createElement("canvas");
-		canvas.width = width;
-		canvas.height = height;
+		canvas.width = outputWidth;
+		canvas.height = outputHeight;
 
 		const ctx = canvas.getContext("2d")!;
-		ctx.drawImage(originalImage, 0, 0, width, height);
+		ctx.drawImage(inputImage, 0, 0, outputWidth, outputHeight);
 
-		outputURL = canvas.toDataURL(outputMimeType, outputQuality);
+		generatedURL = canvas.toDataURL(outputMimeType, outputQuality);
 		generatedOutputMimeType = outputMimeType;
 	}
 
 	function saveFile() {
 		const extension = imageFormats[generatedOutputMimeType].split(",")[0];
-		const fileName = file.name.slice(0, file.name.lastIndexOf("."));
-		saveURL(outputURL, fileName + "." + extension);
+		const fileName = inputName;
+		saveURL(generatedURL, fileName + "." + extension);
 	}
 </script>
 
 <div class="ImageConverter">
-	<MediaDisplay saveFile={saveFile} showOutput={!!outputURL}>
-		<img slot=input src={src} alt="Original" bind:this={originalImage} on:load={onLoad} />
-		<img slot=output src={outputURL} alt="Converted">
-	</MediaDisplay>
+	<SideBySide saveFile={saveFile} showOutput={!!generatedURL}>
+		<img slot=input src={inputURL} alt="Original" bind:this={inputImage} on:load={onLoad} />
+		<img slot=output src={generatedURL} alt="Converted">
+	</SideBySide>
 
 	<panel->
 		<div>
-			Input Format: <code>{file.type}</code>
+			Input Format: <code>{inputType}</code>
 		</div>
 		<br />
 
@@ -79,14 +85,14 @@
 
 		<label>
 			<div>Output Width</div>
-			<input type="number" class="outlined-text-field" bind:value={width}>
+			<input type="number" class="outlined-text-field" bind:value={outputWidth}>
 		</label>
 	
 		<br />
 
 		<label>
 			<div>Output Height</div>
-			<input type="number" class="outlined-text-field" bind:value={height}>
+			<input type="number" class="outlined-text-field" bind:value={outputHeight}>
 		</label>
 
 		<br />
@@ -108,14 +114,22 @@
 		grid-template-columns: auto 300px;
 	}
 
-	img {
-		display: block;
-    width: 100%;
-		object-fit: contain;
+	/* make the sections appear on top of one another on mobile */
+	@media (max-width: 600px) {
+		.ImageConverter {
+			grid-template-columns: unset;
+			grid-template-rows: 1fr 1fr;
+		}
 	}
 
 	panel- {
 		padding: .5em;
 		overflow: auto;
+	}
+
+	img {
+		display: block;
+		width: 100%;
+		object-fit: contain;
 	}
 </style>

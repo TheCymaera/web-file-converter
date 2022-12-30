@@ -3,6 +3,15 @@
 	import AudioOrVideo from './components/AudioOrVideo.svelte';
 	import Slider from './components/Slider.svelte';
 	import { ffmpeg, ffmpegLoaded, saveURL } from "./utilities.js";
+	
+	export function loadFile(file: File) {
+		inputFile = file;
+		if (inputURL) URL.revokeObjectURL(inputURL);
+		inputURL = URL.createObjectURL(inputFile);
+
+		outputMimeType = inputFile.type as keyof typeof allFormats;
+		generatedURL = "";
+	}
 
 	const videoFormats = {
 		"video/mp4": "mp4",
@@ -24,27 +33,27 @@
 		...audioFormats,
 	}
 
-	export let file: File;
-	let outputMimeType: keyof typeof videoFormats = file.type as keyof typeof videoFormats;
-	let generatedOutputMimeType: keyof typeof videoFormats = outputMimeType;
-	let outputURL: string;
-	let progressText = "";
-	let progress = 0;
-
+	// input
+	let inputFile: File|undefined;
+	let inputURL = "";
+	
+	// config
+	let outputMimeType: keyof typeof allFormats = "audio/mpeg";
 	let videoQuality = 7;
 	let audioQuality = 6;
 
-	let src = "";
-	$: {
-		if (src) URL.revokeObjectURL(src);
-		src = URL.createObjectURL(file);
-	}
+	// generated
+	let generatedURL: string;
+	let generatedMimeType: keyof typeof allFormats = outputMimeType;
+	let progressText = "";
+	let progress = 0;
 
 	ffmpeg.setProgress(({ ratio }) => {
 		progress = ratio;
 	});
 
 	async function convert() {
+		if (!inputFile) return;
 		const outputFile = 'output.' + allFormats[outputMimeType].split(", ")[0]!;
 
 		progressText = "Loading FFmpeg..."
@@ -61,12 +70,12 @@
 
 		try {
 			// create files
-			ffmpeg.FS('writeFile', file.name, new Uint8Array(await file.arrayBuffer()));
-			await ffmpeg.run('-i', file.name, ...flags, outputFile);
+			ffmpeg.FS('writeFile', inputFile.name, new Uint8Array(await inputFile.arrayBuffer()));
+			await ffmpeg.run('-i', inputFile.name, ...flags, outputFile);
 			output = ffmpeg.FS('readFile', outputFile);
 		} finally {
 			// delete files
-			ffmpeg.FS('unlink', file.name);
+			ffmpeg.FS('unlink', inputFile.name);
 			ffmpeg.FS('unlink', outputFile);
 		}
 
@@ -77,36 +86,37 @@
 
 		const blob = new Blob([output], { type: outputMimeType });
 
-		generatedOutputMimeType = outputMimeType;
-		if (outputURL) URL.revokeObjectURL(outputURL);
-  	outputURL = URL.createObjectURL(blob);
+		generatedMimeType = outputMimeType;
+		if (generatedURL) URL.revokeObjectURL(generatedURL);
+  	generatedURL = URL.createObjectURL(blob);
 
 		progressText = "";
 	}
 	
 	function saveFile() {
-		const extension = generatedOutputMimeType.split("/")[1];
-		const fileName = file.name.slice(0, file.name.lastIndexOf("."));
-		saveURL(outputURL, fileName + "." + extension);
+		if (!inputFile) return;
+		const extension = generatedMimeType.split("/")[1];
+		const fileName = inputFile.name.slice(0, inputFile.name.lastIndexOf("."));
+		saveURL(generatedURL, fileName + "." + extension);
 	}
 </script>
 
 <div class="VideoConverter">
-	<MediaDisplay showOutput={!!outputURL} saveFile={saveFile}>
-		<AudioOrVideo slot="input" mimeType={file.type} src={src}></AudioOrVideo>
-		<AudioOrVideo slot="output" mimeType={generatedOutputMimeType} src={outputURL}></AudioOrVideo>
+	<MediaDisplay showOutput={!!generatedURL} saveFile={saveFile}>
+		<AudioOrVideo slot="input" mimeType={inputFile?.type ?? ""} src={inputURL}></AudioOrVideo>
+		<AudioOrVideo slot="output" mimeType={generatedMimeType} src={generatedURL}></AudioOrVideo>
 	</MediaDisplay>
 
 	<panel->
 		<div>
-			Input Format: <code>{file.type}</code>
+			Input Format: <code>{inputFile?.type}</code>
 		</div>
 		<br />
 
 		<label>
 			<div>Output Format</div>
 			<select class="outlined-text-field" bind:value={outputMimeType}>
-				{#if file.type.startsWith("video/")}
+				{#if inputFile?.type.startsWith("video/")}
 					<optgroup label="Video">
 						{#each Object.entries(videoFormats) as [mimeType, extensions]}
 							<option value={mimeType}>{mimeType} <small>({extensions})</small></option>
@@ -153,7 +163,16 @@
 		grid-template-columns: auto 300px;
 	}
 
+	/* make the sections appear on top of one another on mobile */
+	@media (max-width: 600px) {
+		.VideoConverter {
+			grid-template-columns: unset;
+			grid-template-rows: 1fr 1fr;
+		}
+	}
+
 	panel- {
 		padding: 0.5em;
+		overflow: auto;
 	}
 </style>
