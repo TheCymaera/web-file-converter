@@ -105,8 +105,14 @@ let dialogOpen = false;
 		pointer-events: {dialogOpen ? "all" : "none"};
 		transition: opacity .1s;
 	">
-	<div style="margin: auto; max-width: 800px; padding: .5em 1em;">
-		<AppInfo />
+	<div style="height: 100%; overflow: auto;">
+		<div style="
+			margin: auto; 
+			max-width: 800px; 
+			padding: .5em 1em;
+		">
+			<AppInfo />
+		</div>
 	</div>
 	<button 
 		class="circle-button" 
