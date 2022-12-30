@@ -57,7 +57,7 @@ let dialogOpen = false;
 			<helion-app-bar-title>File Converter</helion-app-bar-title>
 			<helion-app-bar-right>
 				{#if updateAvailable}
-					<a class="helion-app-bar-icon-button" href="./" title="An Update is Available. Reload?" style="color: var(--color-accent);">
+					<a class="helion-app-bar-icon-button" href="./" title="An Update is Available. Reload?" style="color: var(--helion-color-accent);">
 						<Icon url="{downloadIcon}" />
 					</a>
 				{/if}

@@ -68,12 +68,12 @@ div::after {
 }
 
 .isDragging::after {
-	border-color: var(--color-accent);
+	border-color: var(--helion-color-accent);
 }
 
 .isOverlay {
 	opacity: 0;
-	background-color: var(--color-backdrop-background);
+	background-color: var(--helion-color-backdrop-background);
 	pointer-events: none;
 }
 
