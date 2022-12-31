@@ -6,11 +6,9 @@
 	
 	export function loadFile(file: File) {
 		inputFile = file;
-		if (inputURL) URL.revokeObjectURL(inputURL);
-		inputURL = URL.createObjectURL(inputFile);
-
-		outputMimeType = inputFile.type as keyof typeof allFormats;
 		generatedFile = undefined;
+		
+		outputMimeType = inputFile.type as keyof typeof allFormats;
 	}
 
 	const videoFormats = {
@@ -35,7 +33,6 @@
 
 	// input
 	let inputFile: File|undefined;
-	let inputURL = "";
 	
 	// output-config
 	let outputMimeType: keyof typeof allFormats = "audio/mpeg";
