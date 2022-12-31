@@ -1,23 +1,22 @@
 <script lang="ts">
-	import SideBySide from "./components/SideBySideDisplay.svelte";
+	import ConverterPage from "./components/ConverterPage.svelte";
 	import Slider from "./components/Slider.svelte";
-	import { saveURL } from "./utilities.js";
 
 	export function loadFile(file: File) {
-		if (inputURL) URL.revokeObjectURL(inputURL);
-		inputURL = URL.createObjectURL(file);
-		inputName = file.name.slice(0, file.name.lastIndexOf("."));
-		inputType = file.type;
-		
-		generatedURL = "";
+		inputFile = file;
+		generatedFile = undefined;
+
+		const image = new Image();
+		image.src = URL.createObjectURL(inputFile);
+		image.onload = () => {
+			outputWidth = image.naturalWidth;
+			outputHeight = image.naturalHeight;
+		}
+		setTimeout(()=>URL.revokeObjectURL(image.src), 1000);
+		inputImage = image;
 	}
 
-	function onLoad(this: HTMLImageElement) {
-		outputWidth = this.naturalWidth;
-		outputHeight = this.naturalHeight;
-	}
-
-	const imageFormats = {
+	const allFormats = {
 		"image/png": "png",
 		"image/jpeg": "jpg",
 		//"image/gif": "gif",
@@ -26,10 +25,8 @@
 	};
 
 	// input
-	let inputURL = "";
-	let inputName = "";
-	let inputType = "";
-	let inputImage: HTMLImageElement;
+	let inputFile: File|undefined;
+	let inputImage: HTMLImageElement|undefined;
 	
 	// config
 	let outputMimeType = "image/png";
@@ -38,10 +35,11 @@
 	let outputHeight = 0;
 
 	// generated
-	let generatedURL = "";
-	let generatedOutputMimeType = outputMimeType;
+	let generatedFile: File|undefined;
 
 	function convert() {
+		if (!inputFile || !inputImage) return;
+
 		const canvas = document.createElement("canvas");
 		canvas.width = outputWidth;
 		canvas.height = outputHeight;
@@ -49,87 +47,54 @@
 		const ctx = canvas.getContext("2d")!;
 		ctx.drawImage(inputImage, 0, 0, outputWidth, outputHeight);
 
-		generatedURL = canvas.toDataURL(outputMimeType, outputQuality);
-		generatedOutputMimeType = outputMimeType;
-	}
+		const outputBaseName = inputFile.name.slice(0, inputFile.name.lastIndexOf("."))
+		const outputExtension = allFormats[outputMimeType].split(", ")[0]!;
+		const outputFileName = outputBaseName + "." + outputExtension;
 
-	function saveFile() {
-		const extension = imageFormats[generatedOutputMimeType].split(",")[0];
-		const fileName = inputName;
-		saveURL(generatedURL, fileName + "." + extension);
+		canvas.toBlob(blob=>{
+			if (!blob) return;
+			generatedFile = new File([blob], outputFileName, {type: outputMimeType});
+		}, outputMimeType, outputQuality);
 	}
 </script>
 
-<div class="ImageConverter">
-	<SideBySide saveFile={saveFile} showOutput={!!generatedURL}>
-		<img slot=input src={inputURL} alt="Original" bind:this={inputImage} on:load={onLoad} />
-		<img slot=output src={generatedURL} alt="Converted">
-	</SideBySide>
+<ConverterPage {inputFile} outputFile={generatedFile}>
+	<div>
+		Input Format: <code>{inputFile?.type}</code>
+	</div>
+	<br />
 
-	<helion-panel>
-		<div>
-			Input Format: <code>{inputType}</code>
-		</div>
+	<label>
+		<div>Output Format</div>
+		<select class="helion-outlined-text-field" bind:value={outputMimeType}>
+			{#each Object.entries(allFormats) as [mimeType, extensions]}
+				<option value={mimeType}>{allFormats[mimeType]} ({extensions})</option>
+			{/each}
+		</select>
+	</label>
+
+	<br />
+
+	<label>
+		<div>Output Width</div>
+		<input type="number" class="helion-outlined-text-field" bind:value={outputWidth}>
+	</label>
+
+	<br />
+
+	<label>
+		<div>Output Height</div>
+		<input type="number" class="helion-outlined-text-field" bind:value={outputHeight}>
+	</label>
+
+	<br />
+
+	<label style="display: {outputMimeType === "image/png" ? "none" : ""}">
+		<div>Image Quality <small>(Lossy Compression)</small></div>
+		<Slider step={.01} min={0} max={1} bind:value={outputQuality} />
+		
 		<br />
+	</label>
 
-		<label>
-			<div>Output Format</div>
-			<select class="helion-outlined-text-field" bind:value={outputMimeType}>
-				{#each Object.entries(imageFormats) as [mimeType, extensions]}
-					<option value={mimeType}>{imageFormats[mimeType]} ({extensions})</option>
-				{/each}
-			</select>
-		</label>
-
-		<br />
-
-		<label>
-			<div>Output Width</div>
-			<input type="number" class="helion-outlined-text-field" bind:value={outputWidth}>
-		</label>
-	
-		<br />
-
-		<label>
-			<div>Output Height</div>
-			<input type="number" class="helion-outlined-text-field" bind:value={outputHeight}>
-		</label>
-
-		<br />
-
-		<label style="display: {outputMimeType === "image/jpeg" ? "" : "none"}">
-			<div>Image Quality <small>(Lossy Compression)</small></div>
-			<Slider step={.01} min={0} max={1} bind:value={outputQuality} />
-			
-			<br />
-		</label>
-
-		<button class="helion-filled-button" on:click={convert}>Convert</button>
-	</helion-panel>
-</div>
-
-<style>
-	.ImageConverter {
-		display: grid;
-		grid-template-columns: auto 300px;
-	}
-
-	/* make the sections appear on top of one another on mobile */
-	@media (max-width: 600px) {
-		.ImageConverter {
-			grid-template-columns: unset;
-			grid-template-rows: 1fr 1fr;
-		}
-	}
-
-	helion-panel {
-		padding: .5em;
-		overflow: auto;
-	}
-
-	img {
-		display: block;
-		width: 100%;
-		object-fit: contain;
-	}
-</style>
+	<button class="helion-filled-button" on:click={convert}>Convert</button>
+</ConverterPage>

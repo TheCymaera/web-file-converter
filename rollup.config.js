@@ -37,8 +37,8 @@ export default [
 				fileName: "main.css",
 				outputStyle: "compressed",
 			}),
-			terser({
-			}),
+			// terser({
+			// }),
 		]
 	},
 	//{

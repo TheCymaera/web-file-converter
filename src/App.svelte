@@ -50,7 +50,7 @@ let dialogOpen = false;
 </script>
 
 {#if !file}
-	<standard-view>
+	<helion-standard-view>
 		<helion-app-bar slot="header">
 			<helion-app-bar-left>
 			</helion-app-bar-left>
@@ -79,9 +79,9 @@ let dialogOpen = false;
 				</helion-center>
 			</DragAndDrop>
 		</helion-stack>
-	</standard-view>
+	</helion-standard-view>
 {:else}
-	<standard-view>
+	<helion-standard-view>
 		<helion-app-bar slot="header" center-title="">
 			<helion-app-bar-left>
 				<button class="helion-app-bar-icon-button" on:click={()=>file = undefined}>
@@ -103,7 +103,7 @@ let dialogOpen = false;
 				</helion-center>
 			</DragAndDrop>
 		</helion-stack>
-	</standard-view>
+	</helion-standard-view>
 {/if}
 
 <helion-panel 

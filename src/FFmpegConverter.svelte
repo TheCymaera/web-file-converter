@@ -1,9 +1,8 @@
 <script lang="ts">
-	import MediaDisplay from './components/SideBySideDisplay.svelte';
-	import AudioOrVideo from './components/AudioOrVideo.svelte';
+	import ConverterPage from './components/ConverterPage.svelte';
 	import Slider from './components/Slider.svelte';
-	import { ffmpeg, loadFFmpeg, saveURL } from "./utilities.js";
-    import { onMount } from 'svelte';
+	import { ffmpeg, loadFFmpeg } from "./utilities.js";
+	import { onMount } from 'svelte';
 	
 	export function loadFile(file: File) {
 		inputFile = file;
@@ -11,7 +10,7 @@
 		inputURL = URL.createObjectURL(inputFile);
 
 		outputMimeType = inputFile.type as keyof typeof allFormats;
-		generatedURL = "";
+		generatedFile = undefined;
 	}
 
 	const videoFormats = {
@@ -38,14 +37,13 @@
 	let inputFile: File|undefined;
 	let inputURL = "";
 	
-	// config
+	// output-config
 	let outputMimeType: keyof typeof allFormats = "audio/mpeg";
-	let videoQuality = 7;
-	let audioQuality = 6;
+	let outputVideoQuality = 7;
+	let outputAudioQuality = 6;
 
 	// generated
-	let generatedURL: string;
-	let generatedMimeType: keyof typeof allFormats = outputMimeType;
+	let generatedFile: File|undefined;
 	let progressText = "";
 	let progress = 0;
 
@@ -57,29 +55,36 @@
 
 	async function convert() {
 		if (!inputFile) return;
-		const outputFile = 'output.' + allFormats[outputMimeType].split(", ")[0]!;
-
-		progressText = "Loading FFmpeg..."
-		progress = 0;
-		await loadFFmpeg();
 		
-		progressText = "Converting..."
-		let output: Uint8Array|undefined;
+		const outputBaseName = inputFile.name.slice(0, inputFile.name.lastIndexOf("."))
+		const outputExtension = allFormats[outputMimeType].split(", ")[0]!;
+		const outputFileName = outputBaseName + "." + outputExtension;
 
 		const flags = [
-			"-q:v", videoQuality.toString(),
-			"-q:a", audioQuality.toString(),
+			"-q:v", outputVideoQuality.toString(),
+			"-q:a", outputAudioQuality.toString(),
 		];
 
+		let output: Uint8Array|undefined;
 		try {
+			progressText = "Loading FFmpeg..."
+			progress = 0;
+			await loadFFmpeg();
+
+			progressText = "Converting..."
+
 			// create files
 			ffmpeg.FS('writeFile', inputFile.name, new Uint8Array(await inputFile.arrayBuffer()));
-			await ffmpeg.run('-i', inputFile.name, ...flags, outputFile);
-			output = ffmpeg.FS('readFile', outputFile);
+			await ffmpeg.run('-i', inputFile.name, ...flags, outputFileName);
+			output = ffmpeg.FS('readFile', outputFileName);
 		} finally {
 			// delete files
-			ffmpeg.FS('unlink', inputFile.name);
-			ffmpeg.FS('unlink', outputFile);
+			try {
+				ffmpeg.FS('unlink', inputFile.name);
+			} catch {}
+			try {
+				ffmpeg.FS('unlink', outputFileName);
+			} catch {}
 		}
 
 		if (!output) {
@@ -87,95 +92,57 @@
 			return;
 		}
 
-		const blob = new Blob([output], { type: outputMimeType });
-
-		generatedMimeType = outputMimeType;
-		if (generatedURL) URL.revokeObjectURL(generatedURL);
-  	generatedURL = URL.createObjectURL(blob);
+		generatedFile = new File([output], outputFileName, { type: outputMimeType });
 
 		progressText = "";
 	}
-	
-	function saveFile() {
-		if (!inputFile) return;
-		const extension = generatedMimeType.split("/")[1];
-		const fileName = inputFile.name.slice(0, inputFile.name.lastIndexOf("."));
-		saveURL(generatedURL, fileName + "." + extension);
-	}
 </script>
 
-<div class="VideoConverter">
-	<MediaDisplay showOutput={!!generatedURL} saveFile={saveFile}>
-		<AudioOrVideo slot="input" mimeType={inputFile?.type ?? ""} src={inputURL}></AudioOrVideo>
-		<AudioOrVideo slot="output" mimeType={generatedMimeType} src={generatedURL}></AudioOrVideo>
-	</MediaDisplay>
+<ConverterPage {inputFile} outputFile={generatedFile}>
+	<div>
+		Input Format: <code>{inputFile?.type}</code>
+	</div>
+	<br />
 
-	<helion-panel>
-		<div>
-			Input Format: <code>{inputFile?.type}</code>
-		</div>
-		<br />
-
-		<label>
-			<div>Output Format</div>
-			<select class="helion-outlined-text-field" bind:value={outputMimeType}>
-				{#if inputFile?.type.startsWith("video/")}
-					<optgroup label="Video">
-						{#each Object.entries(videoFormats) as [mimeType, extensions]}
-							<option value={mimeType}>{mimeType} <small>({extensions})</small></option>
-						{/each}
-					</optgroup>
-				{/if}
-				<optgroup label="Audio">
-					{#each Object.entries(audioFormats) as [mimeType, extensions]}
+	<label>
+		<div>Output Format</div>
+		<select class="helion-outlined-text-field" bind:value={outputMimeType}>
+			{#if inputFile?.type.startsWith("video/")}
+				<optgroup label="Video">
+					{#each Object.entries(videoFormats) as [mimeType, extensions]}
 						<option value={mimeType}>{mimeType} <small>({extensions})</small></option>
 					{/each}
 				</optgroup>
-			</select>
-		</label>
+			{/if}
+			<optgroup label="Audio">
+				{#each Object.entries(audioFormats) as [mimeType, extensions]}
+					<option value={mimeType}>{mimeType} <small>({extensions})</small></option>
+				{/each}
+			</optgroup>
+		</select>
+	</label>
+	<br />
+
+	<label style="display: {outputMimeType.startsWith("video/") ? "" : "none"}">
+		<div>Video Quality <small>(Lossy Compression)</small></div>
+		<Slider min={0} max={10} step={.1} bind:value={outputVideoQuality}/>
 		<br />
+	</label>
 
-		<label style="display: {outputMimeType.startsWith("video/") ? "" : "none"}">
-			<div>Video Quality <small>(Lossy Compression)</small></div>
-			<Slider min={0} max={10} step={.1} bind:value={videoQuality}/>
-			<br />
-		</label>
-
-		<label>
-			<div>Audio Quality <small>(Lossy Compression)</small></div>
-			<Slider min={0} max={10} step={.1} bind:value={audioQuality}/>
-			<br />
-		</label>
-
-		<button class="helion-filled-button" on:click={convert} disabled={!!progressText}>Convert</button>
-		
+	<label>
+		<div>Audio Quality <small>(Lossy Compression)</small></div>
+		<Slider min={0} max={10} step={.1} bind:value={outputAudioQuality}/>
 		<br />
-		<br />
+	</label>
 
-		{#if progressText}
-			<div style="text-align: center;">{progressText}</div>
-			<progress value={progress} max="1" style="display: block; width: 100%;"></progress> 
-			<small style="display: block; text-align: center;">{(progress * 100).toFixed(2)}%</small>
-		{/if}
-	</helion-panel>
-</div>
+	<button class="helion-filled-button" on:click={convert} disabled={!!progressText}>Convert</button>
+	
+	<br />
+	<br />
 
-<style>
-	.VideoConverter {
-		display: grid;
-		grid-template-columns: auto 300px;
-	}
-
-	/* make the sections appear on top of one another on mobile */
-	@media (max-width: 600px) {
-		.VideoConverter {
-			grid-template-columns: unset;
-			grid-template-rows: 1fr 1fr;
-		}
-	}
-
-	helion-panel {
-		padding: 0.5em;
-		overflow: auto;
-	}
-</style>
+	{#if progressText}
+		<div style="text-align: center;">{progressText}</div>
+		<progress value={progress} max="1" style="display: block; width: 100%;"></progress> 
+		<small style="display: block; text-align: center;">{(progress * 100).toFixed(2)}%</small>
+	{/if}
+</ConverterPage>
