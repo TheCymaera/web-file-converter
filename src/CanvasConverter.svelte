@@ -2,18 +2,13 @@
 	import ConverterPage from "./components/ConverterPage.svelte";
 	import Slider from "./components/Slider.svelte";
 
-	export function loadFile(file: File) {
+	export async function loadFile(file: File) {
 		inputFile = file;
 		generatedFile = undefined;
 
-		const image = new Image();
-		image.src = URL.createObjectURL(inputFile);
-		image.onload = () => {
-			outputWidth = image.naturalWidth;
-			outputHeight = image.naturalHeight;
-		}
-		setTimeout(()=>URL.revokeObjectURL(image.src), 1000);
-		inputImage = image;
+		inputImage = await createImageBitmap(file);
+		outputWidth = inputImage.width;
+		outputHeight = inputImage.height;
 	}
 
 	const allFormats = {
@@ -26,7 +21,7 @@
 
 	// input
 	let inputFile: File|undefined;
-	let inputImage: HTMLImageElement|undefined;
+	let inputImage: ImageBitmap|undefined;
 	
 	// config
 	let outputMimeType = "image/png";
