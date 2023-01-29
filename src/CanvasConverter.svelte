@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onDestroy } from "svelte";
 	import ConverterPage from "./components/ConverterPage.svelte";
 	import Slider from "./components/Slider.svelte";
 
@@ -6,10 +7,15 @@
 		inputFile = file;
 		generatedFile = undefined;
 
+		inputImage?.close();
 		inputImage = await createImageBitmap(file);
 		outputWidth = inputImage.width;
 		outputHeight = inputImage.height;
 	}
+
+	onDestroy(() => {
+		inputImage?.close();
+	});
 
 	const allFormats = {
 		"image/png": "png",
