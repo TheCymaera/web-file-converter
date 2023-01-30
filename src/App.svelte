@@ -12,7 +12,7 @@ import backIcon from "./icons/angle-left.svg";
 import Icon from "./components/Icon.svelte";
 
 
-let loadFile: (file: File)=>void;
+let loadFile: (file: File)=>any;
 let file: File|undefined;
 
 const converters = [
@@ -74,7 +74,7 @@ let dialogOpen = false;
 				<helion-center style="text-align: center; padding: 1em;">
 					<p>
 						Drag and drop a video, image, or audio file. <br />
-						<small>All conversions are done locally in your browser. We never receive your files.</small>
+						<small>All conversions are done locally in your browser. I never receive your files.</small>
 					</p>
 				</helion-center>
 			</DragAndDrop>
