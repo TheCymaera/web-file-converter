@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onDestroy } from "svelte";
+	import { onDestroy } from "svelte";
 	import ConverterPage from "./components/ConverterPage.svelte";
 	import Slider from "./components/Slider.svelte";
 
