@@ -74,7 +74,7 @@ let dialogOpen = false;
 				<helion-center style="text-align: center; padding: 1em;">
 					<p>
 						Drag and drop a video, image, or audio file. <br />
-						<small>All conversions are done locally in your browser. I never receive your files.</small>
+						<small>All files are processed locally in your browser. I never receive your files.</small>
 					</p>
 				</helion-center>
 			</DragAndDrop>
@@ -98,7 +98,7 @@ let dialogOpen = false;
 				<helion-center style="text-align: center; padding: 1em;">
 					<p>
 						Drag and drop a video, image, or audio file. <br />
-						<small>All conversions are done locally in your browser. We never receive your files.</small>
+						<small>All files are processed locally in your browser. I never receive your files.</small>
 					</p>
 				</helion-center>
 			</DragAndDrop>
