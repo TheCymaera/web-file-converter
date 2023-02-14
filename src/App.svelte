@@ -50,7 +50,7 @@ let dialogOpen = false;
 </script>
 
 {#if !file}
-	<helion-standard-view>
+	<helion-standard-view class="helion-fill-parent">
 		<helion-app-bar slot="header">
 			<helion-app-bar-left>
 			</helion-app-bar-left>
@@ -81,7 +81,7 @@ let dialogOpen = false;
 		</helion-stack>
 	</helion-standard-view>
 {:else}
-	<helion-standard-view>
+	<helion-standard-view class="helion-fill-parent">
 		<helion-app-bar slot="header" center-title="">
 			<helion-app-bar-left>
 				<button class="helion-app-bar-icon-button" on:click={()=>file = undefined}>
@@ -107,6 +107,7 @@ let dialogOpen = false;
 {/if}
 
 <helion-panel 
+	class="helion-fill-parent"
 	style="
 		opacity: {dialogOpen ? 1 : 0};
 		pointer-events: {dialogOpen ? "all" : "none"};

@@ -11,17 +11,17 @@
 	$page_og_title = $page_title;
 	$page_og_description = $page_description;
 	$page_og_url = $url;
-	$page_og_image = $url . "thumbnail.png";
+	$page_og_image = $url . "thumbnail.webp";
 	$page_og_type = "website";
 
 	header('Cross-Origin-Embedder-Policy: require-corp');
 	header('Cross-Origin-Opener-Policy: same-origin');
 ?>
 <!DOCTYPE html>
-<html class="helion-full-window-document">
+<html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 	<!-- title & favicon -->
 	<title><?php echo $page_title;?></title>
@@ -53,6 +53,6 @@
 	<!-- scripts -->
 	<script src="./dst/main.js" type="module"></script>
 </head>
-<body class="helion-stack">
+<body>
 </body>
 </html>
