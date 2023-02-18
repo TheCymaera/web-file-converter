@@ -1,7 +1,6 @@
 <script lang="ts">
-	import Icon from "./Icon.svelte";
+	import { fa5_solid_save } from "fontawesome-svgs";
 	import MediaDisplay from "./MediaDisplay.svelte";
-	import saveIcon from "../icons/save.svg";
 
 	export let inputFile: File|undefined;
 	export let outputFile: File|undefined;
@@ -37,7 +36,7 @@
 			class="helion-circle-button" 
 			on:click={saveFile}
 			title="Save File">
-			<Icon url="{saveIcon}" />
+			{@html fa5_solid_save}
 		</button>
 	</helion-wrapping-grid>
 

@@ -4,12 +4,7 @@ import CanvasConverter from "./CanvasConverter.svelte";
 import FFmpegConverter from "./FFmpegConverter.svelte";
 import AppInfo from "./AppInfo.svelte";
 import { tick } from "svelte";
-import closeIcon from "./icons/times.svg";
-import homeIcon from "./icons/home.svg";
-import infoIcon from "./icons/info.svg";
-import downloadIcon from "./icons/download.svg";
-import backIcon from "./icons/angle-left.svg";
-import Icon from "./components/Icon.svelte";
+import { fa5_solid_angleLeft, fa5_solid_download, fa5_solid_home, fa5_solid_info, fa5_solid_times } from "fontawesome-svgs";
 
 
 let loadFile: (file: File)=>any;
@@ -58,14 +53,14 @@ let dialogOpen = false;
 			<helion-app-bar-right>
 				{#if updateAvailable}
 					<a class="helion-app-bar-icon-button" href="./" title="An Update is Available. Reload?" style="color: var(--helion-color-accent);">
-						<Icon url="{downloadIcon}" />
+						{@html fa5_solid_download}
 					</a>
 				{/if}
 				<a class="helion-app-bar-icon-button" href="/" title="Home">
-					<Icon url="{homeIcon}" />
+					{@html fa5_solid_home}
 				</a>
 				<button class="helion-app-bar-icon-button" on:click={()=>dialogOpen = true} title="Info">
-					<Icon url="{infoIcon}" />
+					{@html fa5_solid_info}
 				</button>
 			</helion-app-bar-right>
 		</helion-app-bar>
@@ -85,7 +80,7 @@ let dialogOpen = false;
 		<helion-app-bar slot="header" center-title="">
 			<helion-app-bar-left>
 				<button class="helion-app-bar-icon-button" on:click={()=>file = undefined}>
-					<Icon url="{backIcon}" />
+					{@html fa5_solid_angleLeft}
 				</button>
 			</helion-app-bar-left>
 			<helion-app-bar-title>Convert File</helion-app-bar-title>
@@ -128,6 +123,6 @@ let dialogOpen = false;
 		title="Close"
 		on:click={()=>dialogOpen = false}
 	>
-		<Icon url="{closeIcon}" />
+		{@html fa5_solid_times}
 	</button>
 </helion-panel>
