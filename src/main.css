@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html {
+	overflow: hidden;
+  overscroll-behavior: none;
+	-webkit-text-size-adjust: none;
+	-webkit-tap-highlight-color: transparent;
+}

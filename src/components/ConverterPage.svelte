@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { fa5_solid_save } from "fontawesome-svgs";
 	import MediaDisplay from "./MediaDisplay.svelte";
+	import WrappingGrid from "../helion/WrappingGrid.svelte";
+	import CircleButton from "../helion/CircleButton.svelte";
 
 	export let inputFile: File|undefined;
 	export let outputFile: File|undefined;
@@ -14,75 +16,51 @@
 		URL.revokeObjectURL(a.href);
 	}
 </script>
-<div class="ConverterPage">
-	<helion-wrapping-grid
-		class="SideBySide" 
-		class:showOutput={outputFile !== undefined}
-		style="--min-column-width: 500px;"
-		sizing="max"
+<div class="grid grid-cols-[auto,300px] max-md:grid-cols-[1fr] max-md:grid-rows-[min-content,1fr]">
+	<WrappingGrid
+		class="relative SideBySide gap-3 {outputFile !== undefined ? 'showOutput' : ''}"
+		minColumnWidth="500px"
+		expand={true}
 	>
-		<helion-stack>
+		<div class="relative [&>*]:!inset-0 [&>*]:!w-full [&>*]:!h-full [&>*]:!absolute">
 			{#if inputFile}
 				<MediaDisplay file={inputFile} />
 			{/if}
-		</helion-stack>
+		</div>
 
-		<helion-stack>
+		<div class="relative [&>*]:!inset-0 [&>*]:!w-full [&>*]:!h-full [&>*]:!absolute">
 			{#if outputFile}
 				<MediaDisplay file={outputFile} />
 			{/if}
-		</helion-stack>
-		<button 
-			class="helion-circle-button" 
-			on:click={saveFile}
-			title="Save File">
+		</div>
+		<CircleButton 
+			onPress={saveFile}
+			class="absolute bottom-1 right-1"
+			label="Save File">
 			{@html fa5_solid_save}
-		</button>
-	</helion-wrapping-grid>
+		</CircleButton>
+	</WrappingGrid>
 
-	<helion-panel>
+	<div class="bg-surfaceContainer text-onSurfaceContainer p-3">
 		<slot></slot>
-	</helion-panel>
+	</div>
 </div>
 
 <style>
-	.ConverterPage {
-		display: grid;
-		grid-template-columns: auto 300px;
-	}
-
-	/* make the sections appear on top of one another on mobile */
-	@media (max-width: 600px) {
-		.ConverterPage {
-			grid-template-columns: unset;
-			grid-template-rows: 1fr 1fr;
-		}
-	}
-
-	.SideBySide {
+	:global(.SideBySide) {
 		overflow: hidden;
 		padding: .5em;
 		grid-gap: .5em;
 	}
 
-	.helion-circle-button {
-		position: absolute;
-		bottom: .2em;
-		right: .2em;
-	}
-
-	.SideBySide:not(.showOutput) > :not(:first-child) {
+	:global(.SideBySide:not(.showOutput) > :not(:first-child)) {
 		display: none;
 	}
 
 	/* hide the first slot on mobile if there is a second slot */
 	@media (max-width: 600px) {
-		.SideBySide.showOutput > :first-child {
+		:global(.SideBySide.showOutput > :first-child) {
 			display: none;
 		}
-	}
-
-	helion-panel {
-		padding: .5em;
 	}
 </style>

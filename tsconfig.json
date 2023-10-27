@@ -2,13 +2,13 @@
 	"include": ["src/**/*"],
 	"compilerOptions": {
 		"rootDir": "src",
-		"module": "ESNext",
+		"module": "NodeNext",
 		"target": "ESNext",
 
-		"moduleResolution": "node16",
+		"moduleResolution": "nodenext",
 		"allowSyntheticDefaultImports": true,
 
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "isolatedModules": false,
 
     "strict": false,

@@ -3,8 +3,10 @@ import DragAndDrop from "./components/DragAndDrop.svelte";
 import CanvasConverter from "./CanvasConverter.svelte";
 import FFmpegConverter from "./FFmpegConverter.svelte";
 import AppInfo from "./AppInfo.svelte";
+import IconButton from "./helion/IconButton.svelte";
 import { tick } from "svelte";
-import { fa5_solid_angleLeft, fa5_solid_download, fa5_solid_home, fa5_solid_info, fa5_solid_times } from "fontawesome-svgs";
+import { fa5_solid_home, fa5_solid_info, fa5_solid_times } from "fontawesome-svgs";
+  import CircleButton from "./helion/CircleButton.svelte";
 
 
 let loadFile: (file: File)=>any;
@@ -40,89 +42,52 @@ async function loadFiles(files: File[]) {
 }
 
 
-let updateAvailable = false;
 let dialogOpen = false;
 </script>
 
-{#if !file}
-	<helion-standard-view class="helion-fill-parent">
-		<helion-app-bar slot="header">
-			<helion-app-bar-left>
-			</helion-app-bar-left>
-			<helion-app-bar-title>File Converter</helion-app-bar-title>
-			<helion-app-bar-right>
-				{#if updateAvailable}
-					<a class="helion-app-bar-icon-button" href="./" title="An Update is Available. Reload?" style="color: var(--helion-color-accent);">
-						{@html fa5_solid_download}
-					</a>
-				{/if}
-				<a class="helion-app-bar-icon-button" href="/" title="Home">
-					{@html fa5_solid_home}
-				</a>
-				<button class="helion-app-bar-icon-button" on:click={()=>dialogOpen = true} title="Info">
-					{@html fa5_solid_info}
-				</button>
-			</helion-app-bar-right>
-		</helion-app-bar>
-		<helion-stack slot="body">
-			<DragAndDrop onDrop={loadFiles}>
-				<helion-center style="text-align: center; padding: 1em;">
-					<p>
-						Drag and drop a video, image, or audio file. <br />
-						<small>All files are processed locally in your browser. I never receive your files.</small>
-					</p>
-				</helion-center>
-			</DragAndDrop>
-		</helion-stack>
-	</helion-standard-view>
-{:else}
-	<helion-standard-view class="helion-fill-parent">
-		<helion-app-bar slot="header" center-title="">
-			<helion-app-bar-left>
-				<button class="helion-app-bar-icon-button" on:click={()=>file = undefined}>
-					{@html fa5_solid_angleLeft}
-				</button>
-			</helion-app-bar-left>
-			<helion-app-bar-title>Convert File</helion-app-bar-title>
-			
-		</helion-app-bar>
-		<helion-stack slot="body">
+
+<div class="absolute inset-0 grid grid-rows-[min-content,1fr] z-0">
+	<div class="bg-surfaceContainer text-onSurfaceContainer flex overflow-hidden items-center z-10 shadow">
+		<h1 class="flex-1 px-3 font-bold">File Converter</h1>
+		<IconButton href="/" label="Home">
+			{@html fa5_solid_home}
+		</IconButton>
+		<IconButton onPress={()=>dialogOpen = true} label="Info">
+			{@html fa5_solid_info}
+		</IconButton>
+	</div>
+	<div class="relative [&>*]:!absolute [&>*]:!inset-0  z-0">
+		{#if file}
 			<svelte:component this={converter} bind:loadFile />
+		{/if}
 
-			<DragAndDrop onDrop={loadFiles} overlay={true}>
-				<helion-center style="text-align: center; padding: 1em;">
-					<p>
-						Drag and drop a video, image, or audio file. <br />
-						<small>All files are processed locally in your browser. I never receive your files.</small>
-					</p>
-				</helion-center>
-			</DragAndDrop>
-		</helion-stack>
-	</helion-standard-view>
-{/if}
-
-<helion-panel 
-	class="helion-fill-parent"
+		<DragAndDrop onDrop={loadFiles} overlay={!!file}>
+			<div class="text-center grid place-items-center p-4">
+				<p>
+					Drag and drop a video, image, or audio file. <br />
+					<small>All files are processed locally in your browser. I never receive your files.</small>
+				</p>
+			</div>
+		</DragAndDrop>
+	</div>
+</div>
+<div class="absolute inset-0 z-20 bg-surface text-onSurface"
 	style="
 		opacity: {dialogOpen ? 1 : 0};
 		pointer-events: {dialogOpen ? "all" : "none"};
 		transition: opacity .1s;
 	">
-	<div style="height: 100%; overflow: auto;">
-		<div style="
-			margin: auto; 
-			max-width: 800px; 
-			padding: .5em 1em;
-		">
+	<div class="h-full overflow-auto">
+		<div 
+			class="m-auto max-w-[800px] py-4 px-2">
 			<AppInfo />
 		</div>
 	</div>
-	<button 
-		class="helion-circle-button" 
-		style="position: absolute; right: 0.5em; top: 0.5em;"
-		title="Close"
-		on:click={()=>dialogOpen = false}
+	<CircleButton 
+		class="absolute right-2 top-2"
+		label="Close"
+		onPress={()=>dialogOpen = false}
 	>
 		{@html fa5_solid_times}
-	</button>
-</helion-panel>
+	</CircleButton>
+</div>

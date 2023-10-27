@@ -1,6 +1,8 @@
 <script lang="ts">
 	import ConverterPage from './components/ConverterPage.svelte';
 	import Slider from './components/Slider.svelte';
+  import FilledButton from './helion/FilledButton.svelte';
+  import OutlinedSelectField from './helion/OutlinedSelectField.svelte';
 	import { ffmpeg, loadFFmpeg } from "./utilities.js";
 	import { onMount } from 'svelte';
 	
@@ -93,32 +95,26 @@
 
 		progressText = "";
 	}
+
+	$: outputFormatOptions = inputFile?.type.startsWith("video/") ? Object.entries(allFormats) : Object.entries(audioFormats);
 </script>
 
 <ConverterPage {inputFile} outputFile={generatedFile}>
 	<div>
-		Input Format: <code>{inputFile?.type}</code>
+		Input Format: <code class="bg-surface text-onSurface">{inputFile?.type}</code>
 	</div>
 	<br />
 
-	<label>
-		<div>Output Format</div>
-		<select class="helion-outlined-text-field" bind:value={outputMimeType}>
-			{#if inputFile?.type.startsWith("video/")}
-				<optgroup label="Video">
-					{#each Object.entries(videoFormats) as [mimeType, extensions]}
-						<option value={mimeType}>{mimeType} <small>({extensions})</small></option>
-					{/each}
-				</optgroup>
-			{/if}
-			<optgroup label="Audio">
-				{#each Object.entries(audioFormats) as [mimeType, extensions]}
-					<option value={mimeType}>{mimeType} <small>({extensions})</small></option>
-				{/each}
-			</optgroup>
-		</select>
-	</label>
-	<br />
+	<OutlinedSelectField 
+		bind:value={outputMimeType} 
+		label="Output Format" 
+		options={outputFormatOptions.map(([mimeType, extensions])=>({
+			value: mimeType,
+			label: mimeType + " (" + extensions + ")",
+		}))}
+	/>
+
+	<br>
 
 	<label style="display: {outputMimeType.startsWith("video/") ? "" : "none"}">
 		<div>Video Quality <small>(Lossy Compression)</small></div>
@@ -132,7 +128,7 @@
 		<br />
 	</label>
 
-	<button class="helion-filled-button" on:click={convert} disabled={!!progressText}>Convert</button>
+	<FilledButton onPress={convert} disabled={!!progressText}>Convert</FilledButton>
 	
 	<br />
 	<br />

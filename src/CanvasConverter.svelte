@@ -2,6 +2,9 @@
 	import { onDestroy } from "svelte";
 	import ConverterPage from "./components/ConverterPage.svelte";
 	import Slider from "./components/Slider.svelte";
+	import OutlinedSelectField from "./helion/OutlinedSelectField.svelte";
+	import OutlinedNumberField from "./helion/OutlinedNumberField.svelte";
+	import FilledButton from "./helion/FilledButton.svelte";
 
 	export async function loadFile(file: File) {
 		inputFile = file;
@@ -61,32 +64,31 @@
 
 <ConverterPage {inputFile} outputFile={generatedFile}>
 	<div>
-		Input Format: <code>{inputFile?.type}</code>
+		Input Format: <code class="bg-surface text-onSurface">{inputFile?.type}</code>
 	</div>
 	<br />
 
-	<label>
-		<div>Output Format</div>
-		<select class="helion-outlined-text-field" bind:value={outputMimeType}>
-			{#each Object.entries(allFormats) as [mimeType, extensions]}
-				<option value={mimeType}>{allFormats[mimeType]} ({extensions})</option>
-			{/each}
-		</select>
-	</label>
+	<OutlinedSelectField 
+		bind:value={outputMimeType} 
+		label="Output Format" 
+		options={Object.entries(allFormats).map(([mimeType, extensions])=>({value: mimeType, label: allFormats[mimeType] + " (" + extensions + ")"}))} 
+	/>
 
 	<br />
 
-	<label>
-		<div>Output Width</div>
-		<input type="number" class="helion-outlined-text-field" bind:value={outputWidth}>
-	</label>
+	<OutlinedNumberField 
+		label="Output Width" 
+		bind:value={outputWidth} 
+		placeholder={inputImage?.width.toString()}
+	/>
 
 	<br />
 
-	<label>
-		<div>Output Height</div>
-		<input type="number" class="helion-outlined-text-field" bind:value={outputHeight}>
-	</label>
+	<OutlinedNumberField 
+		label="Output Height" 
+		bind:value={outputHeight} 
+		placeholder={inputImage?.height.toString()}
+	/>
 
 	<br />
 
@@ -97,5 +99,5 @@
 		<br />
 	</label>
 
-	<button class="helion-filled-button" on:click={convert}>Convert</button>
+	<FilledButton onPress={convert}>Convert</FilledButton>
 </ConverterPage>
